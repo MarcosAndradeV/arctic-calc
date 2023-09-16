@@ -1,0 +1,22 @@
+WHITESPACE = _{ " " | "\t" }
+COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* }
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+int = { ("+" | "-")? ~ ASCII_DIGIT+ }
+num = @{ int ~ ("." ~ ASCII_DIGIT*)? }
+
+operation = _{ subtract | add | multiply | divide | power | modulus }
+add         = { "+" }
+subtract    = { "-" }
+multiply    = { "*" }
+divide      = { "/" }
+power       = { "^" }
+modulus     = { "%" }
+
+function = { ident ~ "(" ~ expr ~ ")" }
+atom = _{ function | ident | num | "(" ~ expr ~ ")"  }
+expr = { assign | atom ~ (operation ~ atom)* }
+assign = { ident ~ "=" ~ expr }
+
+stmt = _{ expr }
+
+program = _{ SOI ~ (stmt ~ NEWLINE? | NEWLINE)* ~ EOI }
